@@ -32,7 +32,7 @@ legurlall = len(urlcityyearmouth)
 print('Всего операций: ' + str(legurlall))
 operat = 0
 for url in urllist:  # заменить на
-    operat=operat+1
+    operat = operat+1
     headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) '
                'Chrome/35.0.1916.47 Safari/537.36',
                'Cookie': "SCookieID=Cookies"}
@@ -193,3 +193,4 @@ for url in urllist:  # заменить на
             print('')
     with open(f"data/{dictcyty[urldata[4]]}_{monthyear}.json", "a", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
+  
