@@ -33,8 +33,6 @@
 `` ``
 PyCharm https://www.jetbrains.com/pycharm/
 ```
-
-
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
 -Совет код шляпа
