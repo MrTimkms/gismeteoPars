@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="" rel="noopener">
+  <a href="https://github.com/MrTimkms/gismeteoPars#%D0%BE" rel="noopener">
  <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
 </p>
 
@@ -18,31 +18,19 @@
     <br> 
 </p>
 
-## 📝 Table of Contents
-
-- [About](#о)
-- [Getting Started](#начиная)
-- [Deployment](#развертывание)
-- [Usage](#использование)
-- [Built Using](#STOVEL_USING.)
-- [TODO](../Todo.md)
-- [Contributing](../Вклад.md)
-- [Authors](#authors)
-- [Acknowledgments](#подтверждение)
-
-## 🧐 About <a name = "about"></a>
+## 🧐 О чем? <a name = "about"></a>
 
 сбору данных с сайта https://www.gismeteo.ru/diary/ методом парсинга по объектам из списка и записи.
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Быстрый старт <a name = "getting_started"></a>
 
-1 скачать проект
-2 заполнить yearlist и dictcyty в файле godata.py
-3 запустить godata.py
-### Prerequisites
+- скачать проект
+- заполнить yearlist и dictcyty в файле godata.py
+- запустить godata.py
+### Требования
 
 любой интепритатор Python
 
-`` ``.
+`` ``
 PyCharm https://www.jetbrains.com/pycharm/
 ```
 
