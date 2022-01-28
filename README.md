@@ -28,13 +28,13 @@
 - запустить godata.py
 ### Требования
 
-любой интепритатор Python
-
+- любой интепритатор Python
+Пример:
 PyCharm https://www.jetbrains.com/pycharm/
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
--Совет код шляпа
-- вдохновение
+- Вдохновение
 https://github.com/Gordey007/collecting_weather_data_from_openweather
-href=https://istories.media/workshops/2021/09/10/parsing-s-pomoshchyu-python-urok-1/">
+- Используемая литература 
+https://istories.media/workshops/2021/09/10/parsing-s-pomoshchyu-python-urok-1/">
