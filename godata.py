@@ -5,9 +5,8 @@ import pymysql as pymysql
 from bs4 import BeautifulSoup
 from time import sleep
 from config import host, user, password, db_name
-from sqlite3 import Cursor
+from listYearscitys import yearlist, dictcyty
 import datetime
-import time
 
 # Подключимся к БД
 try:
@@ -24,31 +23,19 @@ try:
 except Exception as ex:
     print("ОШИБКА")
     print(ex)
-# добавим список населенны пунктов и их ИД а также список годов
-
-yearlist=['2016', '2017','2018','2019','2020','2021']
-dictcyty=dict()
-dictcyty={'233739': 'Джигда',
-             '233740': 'Нелькан',
-             '233738': 'Аим',
-             '233756': 'Тулучи ',
-             '233757': 'Тумнин',
-             '233780': 'Шахтинское',
-             '233802': 'Шумный',
-             '233797': 'Медвежи'}
+# добавим список населенных пунктов и их ИД а также список годов
 dicctcytyKeys=dictcyty.keys()
 listnameCity=[]
 ListnumCity=[]
 for dicct in dicctcytyKeys:
     listnameCity.append(dictcyty.get(dicct))
     ListnumCity.append(dicct)
-#временно для теста
-# listnameCity = ['Джигда']
-# ListnumCity = ['233739']
 # сформируем список url
 urll = "https://www.gismeteo.ru/diary/"
 legListnumCity = len(ListnumCity)
 urllist = []
+#Формируется список url для разбора страниц, какие именно странницы программе разбирать на данные.
+#Проходя циклом все элементы массива с id города, добавляя к нему разделитель «/» и проходя цикл годов к этим годам также добавляя «/»
 for numcity in range(0, legListnumCity):
     urllcity = urll + ListnumCity[numcity] + '/'
     for numyear in range(0, len(yearlist)):
@@ -58,17 +45,17 @@ for numcity in range(0, legListnumCity):
             urllist.append(urlcityyearmouth)
 # собираем заголовки таблицы для формирования csv
     table_head_idcity = "id города"
-    table_head_Day = "Дата"
+    table_head_Day = "дата"
     table_head_tempday = "Температура день"
     table_head_barday = "давление день"
     table_head_cloudinessDAY = "облачность день"
     table_head_phenomenamaEl = "явления день"
-    table_head_Wind = "ветер день"
-    table_head_tempnight = "Температура вечер"
+    table_head_wind = "ветер день"
+    table_head_tempnight = "температура вечер"
     table_head_barnight = "давление вечер"
     table_head_cloudinessnight = "облачность вечер"
     table_head_phenomenamaElnight = "явления вечер"
-    table_head_Windnight = "ветер вечер"
+    table_head_windnight = "ветер вечер"
 # получаем кол-во операций : ' + str(legurlall)' для вывода сообщений
 legurlall = len(urllist)
 print('Всего операций: ' + str(legurlall))
@@ -85,12 +72,12 @@ with open(f"data/{'Всенаселенныезавсевремя'}.csv", "w", e
             table_head_barday,
             table_head_cloudinessDAY,
             table_head_phenomenamaEl,
-            table_head_Wind,
+            table_head_wind,
             table_head_tempnight,
             table_head_barnight,
             table_head_cloudinessnight,
             table_head_phenomenamaElnight,
-            table_head_Windnight
+            table_head_windnight
         )
     )
 for url in urllist:
@@ -100,7 +87,7 @@ for url in urllist:
                'Cookie': "SCookieID=Cookies"}
     data = []
 
-    # получаем месяцГод
+    # получаем месяц и Год
     urldata = url.split('/')
     numurldata = len(urldata)
     if len(urldata[numurldata - 1]) == 1:
@@ -109,9 +96,10 @@ for url in urllist:
         monthyear = urldata[numurldata - 2] + "-" + urldata[numurldata - 1]
     print('Текщая операция № ' + str(operat) + '. ' +
           dictcyty[urldata[4]] + ' За ' + monthyear + ' . осталось операций: ' + str(legurlall - operat))
-    # Приводим внутрянку  к норм виду
+   #Получение странницы
     r = requests.get(url, headers=headers)
-
+    # Задержка 2 секунды что бы избежать блокировки со тороны сервиса
+    #создание файла выгрузки csv
     with open(f"data/{dictcyty[urldata[4]]}_{monthyear}.csv", "w", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(
@@ -122,16 +110,16 @@ for url in urllist:
                 table_head_barday,
                 table_head_cloudinessDAY,
                 table_head_phenomenamaEl,
-                table_head_Wind,
+                table_head_wind,
                 table_head_tempnight,
                 table_head_barnight,
                 table_head_cloudinessnight,
                 table_head_phenomenamaElnight,
-                table_head_Windnight
+                table_head_windnight
             )
         )
-    # Задержка 2 секунды
     sleep(2)
+    # приводим внутрянку  к форматированному виду html страницу
     soup = BeautifulSoup(r.text, 'lxml')
     days = soup.findAll('tr')
     # смотрим дни в месяце
@@ -160,6 +148,8 @@ for url in urllist:
             else:
                 cloudinessDAY = "-"
             # разбор явления
+            # По аналогии разбираем и явление, за исключением что может быть пустое значение, проработаем это исключение простым условием,
+            # где пустые данные будет в виде «-»
             if td[4].find('img') is not None:
                 phenomenamass = td[4].findAll('img')[0].get('src').split('/')
                 dlphenomena = len(phenomenamass)
@@ -172,10 +162,9 @@ for url in urllist:
                     phenomenamaEl = 'дождь'
                 else:
                     phenomenamaEl = "-"
-
             else:
                 phenomenamaEl = '-'
-            Wind = td[5].text
+            wind = td[5].text
             if td[6].text == '':
                 tempnight = "-"
             else:
@@ -217,11 +206,11 @@ for url in urllist:
 
             else:
                 phenomenamaElnight = '-'
-            Windnight = td[10].text
+            windnight = td[10].text
             if td[10].text == '':
-                Windnight = "-"
+                windnight = "-"
             else:
-                Windnight = td[10].text
+                windnight = td[10].text
             # Добавление текущих данных
             idcity = urldata[4]
             data.append(
@@ -232,15 +221,15 @@ for url in urllist:
                     "barday": barday,
                     "cloudinessDAY": cloudinessDAY,
                     "phenomenamaEl": phenomenamaEl,
-                    "Wind": Wind,
+                    "wind": wind,
                     "tempnight": tempnight,
                     "barnight": barnight,
                     "cloudinessnight": cloudinessnight,
                     "phenomenamaElnight": phenomenamaElnight,
-                    "Windnight": Windnight
+                    "windnight": windnight
                 }
             )
-            # запись csv
+            # запись индивидуального csv
             with open(f"data/{dictcyty[idcity]}_{monthyear}.csv", "a", encoding="utf-8") as file:
                 writer = csv.writer(file)
                 writer.writerow(
@@ -251,15 +240,15 @@ for url in urllist:
                         barday,
                         cloudinessDAY,
                         phenomenamaEl,
-                        Wind,
+                        wind,
                         tempnight,
                         barnight,
                         cloudinessnight,
                         phenomenamaElnight,
-                        Windnight
+                        windnight
                     )
                 )
-                # запись csv все
+                # запись csv общего файла
                 with open(f"data/{'Всенаселенныезавсевремя'}.csv", "a", encoding="utf-8") as file:
                     writer = csv.writer(file)
                     writer.writerow(
@@ -270,36 +259,37 @@ for url in urllist:
                             barday,
                             cloudinessDAY,
                             phenomenamaEl,
-                            Wind,
+                            wind,
                             tempnight,
                             barnight,
                             cloudinessnight,
                             phenomenamaElnight,
-                            Windnight
+                            windnight
                         )
                     )
 
-            # Запись в БД
+            # попытка Запись в БД.
+            # На данный момент не получилось добиться записи в бд
             iddiary = int(
                 str(idcity) + str(urldata[numurldata - 2]) + str(urldata[numurldata - 1]))
             try:
                 with connection.cursor() as cursor:
-                    sql = """ INSERT INTO diary (day, tempday, barday, cloudinessDAY, phenomenamaEl, Wind, tempnight, 
-                    barnight, cloudinessnight, phenomenamaElnight, Windnight, city_idcity)
+                    sql = """ INSERT INTO diary (day, tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight, 
+                    barnight, cloudinessnight, phenomenamaElnight, windnight, city_idcity)
                     VALUES=(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                     record = (
-                    datetime.date.fromisoformat(day), tempday, barday, cloudinessDAY, phenomenamaEl, Wind, tempnight,
-                    barnight, cloudinessnight, phenomenamaElnight, Windnight, int(idcity))
+                    datetime.date.fromisoformat(day), tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight,
+                    barnight, cloudinessnight, phenomenamaElnight, windnight, int(idcity))
                     cursor.execute(sql, record)
                     connection.commit()
-                    print('комитУспешен')
+                    print('Комит успешен')
             finally:
                 connection.close()
         except Exception as exx:
             print(exx)
-    # запись json
+    # запись json индивидуального файла
     with open(f"data/{dictcyty[idcity]}_{monthyear}.json", "a", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
-    # запись json всех данных
+    # запись json общего файла
     with open(f"data/{'Всенаселенныезавсевремя'}_.json", "a", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
