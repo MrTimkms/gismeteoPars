@@ -30,9 +30,8 @@
 
 любой интепритатор Python
 
-`` ``
 PyCharm https://www.jetbrains.com/pycharm/
-```
+
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
 -Совет код шляпа
@@ -40,4 +39,4 @@ PyCharm https://www.jetbrains.com/pycharm/
 https://github.com/Gordey007/collecting_weather_data_from_openweather
 - Использованная литература
 
-  <a href="https://istories.media/workshops/2021/09/10/parsing-s-pomoshchyu-python-urok-1/" 
+  <a text="- Использованная литература" href="https://istories.media/workshops/2021/09/10/parsing-s-pomoshchyu-python-urok-1/">
