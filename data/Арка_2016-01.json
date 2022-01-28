@@ -1,0 +1,72 @@
+[
+    {
+        "idcity": "233918",
+        "day": "2016-01-07",
+        "tempday": "-18",
+        "barday": "746",
+        "cloudinessDAY": "пасмурно",
+        "phenomenamaEl": "-",
+        "Wind": "Ш",
+        "tempnight": "-",
+        "barnight": "-",
+        "cloudinessnight": "-",
+        "phenomenamaElnight": "-",
+        "Windnight": "-"
+    },
+    {
+        "idcity": "233918",
+        "day": "2016-01-15",
+        "tempday": "-8",
+        "barday": "763",
+        "cloudinessDAY": "пасмурно",
+        "phenomenamaEl": "-",
+        "Wind": "С 4м/с",
+        "tempnight": "-",
+        "barnight": "-",
+        "cloudinessnight": "-",
+        "phenomenamaElnight": "-",
+        "Windnight": "-"
+    },
+    {
+        "idcity": "233918",
+        "day": "2016-01-16",
+        "tempday": "-14",
+        "barday": "764",
+        "cloudinessDAY": "пасмурно",
+        "phenomenamaEl": "-",
+        "Wind": "Ш",
+        "tempnight": "-",
+        "barnight": "-",
+        "cloudinessnight": "-",
+        "phenomenamaElnight": "-",
+        "Windnight": "-"
+    },
+    {
+        "idcity": "233918",
+        "day": "2016-01-25",
+        "tempday": "-21",
+        "barday": "749",
+        "cloudinessDAY": "пасмурно",
+        "phenomenamaEl": "снег",
+        "Wind": "С 2м/с",
+        "tempnight": "-",
+        "barnight": "-",
+        "cloudinessnight": "-",
+        "phenomenamaElnight": "-",
+        "Windnight": "-"
+    },
+    {
+        "idcity": "233918",
+        "day": "2016-01-27",
+        "tempday": "-20",
+        "barday": "754",
+        "cloudinessDAY": "пасмурно",
+        "phenomenamaEl": "-",
+        "Wind": "С 3м/с",
+        "tempnight": "-",
+        "barnight": "-",
+        "cloudinessnight": "-",
+        "phenomenamaElnight": "-",
+        "Windnight": "-"
+    }
+]
