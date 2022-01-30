@@ -1,28 +1,28 @@
 import requests
 import json
 import csv
-import pymysql as pymysql
+#import pymysql as pymysql
 from bs4 import BeautifulSoup
 from time import sleep
-from config import host, user, password, db_name
+#from config import host, user, password, db_name
 from listYearscitys import yearlist, dictcyty
 import datetime
 
 # Подключимся к БД
-try:
-    connection = pymysql.connect(
-        host=host,
-        port=3306,
-        user=user,
-        password=password,
-        database=db_name,
-        charset="utf8",
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    print("Connect")
-except Exception as ex:
-    print("ОШИБКА")
-    print(ex)
+# try:
+#     connection = pymysql.connect(
+#         host=host,
+#         port=3306,
+#         user=user,
+#         password=password,
+#         database=db_name,
+#         charset="utf8",
+#         cursorclass=pymysql.cursors.DictCursor
+#     )
+#     print("Connect")
+# except Exception as ex:
+#     print("ОШИБКА")
+#     print(ex)
 # добавим список населенных пунктов и их ИД а также список годов
 dicctcytyKeys=dictcyty.keys()
 listnameCity=[]
@@ -127,129 +127,111 @@ for url in urllist:
         try:
             # разбор строки
             td = day.findAll('td')
-            if len(td[0].text) == 1:
-                day = monthyear + "-" + '0' + td[0].text
-            else:
-                day = monthyear + "-" + td[0].text
-            tempday = td[1].text
-            barday = td[2].text
-            # Разбор облачности
-            cloudinessmas = td[3].findAll('img')[0].get('src').split('/')
-            dlcloudiness = len(cloudinessmas)
-            cloudiness = cloudinessmas[dlcloudiness - 1]
-            if cloudiness == 'dull.png':
-                cloudinessDAY = "пасмурно"
-            elif cloudiness == 'suncl.png':
-                cloudinessDAY = "облачно"
-            elif cloudiness == 'sunc.png':
-                cloudinessDAY = "малооблачно"
-            elif cloudiness == 'sun.png':
-                cloudinessDAY = "ясно"
-            else:
-                cloudinessDAY = "-"
-            # разбор явления
-            # По аналогии разбираем и явление, за исключением что может быть пустое значение, проработаем это исключение простым условием,
-            # где пустые данные будет в виде «-»
-            if td[4].find('img') is not None:
-                phenomenamass = td[4].findAll('img')[0].get('src').split('/')
-                dlphenomena = len(phenomenamass)
-                phenomenama = phenomenamass[dlphenomena - 1]
-                if phenomenama == 'snow.png':
-                    phenomenamaEl = 'снег'
-                elif phenomenama == 'storm.png':
-                    phenomenamaEl = 'гроза'
-                elif phenomenama == 'rain-bw.png':
-                    phenomenamaEl = 'дождь'
+            if bool(td):
+                if len(td[0].text) == 1:
+                    day = monthyear + "-" + '0' + td[0].text
                 else:
-                    phenomenamaEl = "-"
-            else:
-                phenomenamaEl = '-'
-            wind = td[5].text
-            if td[6].text == '':
-                tempnight = "-"
-            else:
-                tempnight = td[6].text
-            if td[7].text == '':
-                barnight = "-"
-            else:
-                barnight = td[7].text
-            # Разбор облачности
-            if td[8].find('img') is not None:
-                cloudinessmas = td[8].findAll('img')[0].get('src').split('/')
+                    day = monthyear + "-" + td[0].text
+                tempday = td[1].text
+                barday = td[2].text
+                # Разбор облачности
+                cloudinessmas = td[3].findAll('img')[0].get('src').split('/')
                 dlcloudiness = len(cloudinessmas)
                 cloudiness = cloudinessmas[dlcloudiness - 1]
                 if cloudiness == 'dull.png':
-                    cloudinessnight = "пасмурно"
+                    cloudinessDAY = "пасмурно"
                 elif cloudiness == 'suncl.png':
-                    cloudinessnight = "облачно"
+                    cloudinessDAY = "облачно"
                 elif cloudiness == 'sunc.png':
-                    cloudinessnight = "малооблачно"
+                    cloudinessDAY = "малооблачно"
                 elif cloudiness == 'sun.png':
-                    cloudinessnight = "ясно"
+                    cloudinessDAY = "ясно"
                 else:
-                    cloudinessnight = "-"
-            else:
-                cloudinessnight = '-'
-            # разбор явления
-            if td[9].find('img') is not None:
-                phenomenamass = td[9].findAll('img')[0].get('src').split('/')
-                dlphenomena = len(phenomenamass)
-                phenomenama = phenomenamass[dlphenomena - 1]
-                if phenomenama == 'snow.png':
-                    phenomenamaElnight = 'снег'
-                elif phenomenama == 'storm.png':
-                    phenomenamaElnight = 'гроза'
-                elif phenomenama == 'rain-bw.png':
-                    phenomenamaElnight = 'дождь'
+                    cloudinessDAY = "-"
+                # разбор явления
+                # По аналогии разбираем и явление, за исключением что может быть пустое значение, проработаем это исключение простым условием,
+                # где пустые данные будет в виде «-»
+                if td[4].find('img') is not None:
+                    phenomenamass = td[4].findAll('img')[0].get('src').split('/')
+                    dlphenomena = len(phenomenamass)
+                    phenomenama = phenomenamass[dlphenomena - 1]
+                    if phenomenama == 'snow.png':
+                        phenomenamaEl = 'снег'
+                    elif phenomenama == 'storm.png':
+                        phenomenamaEl = 'гроза'
+                    elif phenomenama == 'rain-bw.png':
+                        phenomenamaEl = 'дождь'
+                    else:
+                        phenomenamaEl = "-"
                 else:
-                    phenomenamaElnight = "-"
+                    phenomenamaEl = '-'
+                wind = td[5].text
+                if td[6].text == '':
+                    tempnight = "-"
+                else:
+                    tempnight = td[6].text
+                if td[7].text == '':
+                    barnight = "-"
+                else:
+                    barnight = td[7].text
+                # Разбор облачности
+                if td[8].find('img') is not None:
+                    cloudinessmas = td[8].findAll('img')[0].get('src').split('/')
+                    dlcloudiness = len(cloudinessmas)
+                    cloudiness = cloudinessmas[dlcloudiness - 1]
+                    if cloudiness == 'dull.png':
+                        cloudinessnight = "пасмурно"
+                    elif cloudiness == 'suncl.png':
+                        cloudinessnight = "облачно"
+                    elif cloudiness == 'sunc.png':
+                        cloudinessnight = "малооблачно"
+                    elif cloudiness == 'sun.png':
+                        cloudinessnight = "ясно"
+                    else:
+                        cloudinessnight = "-"
+                else:
+                    cloudinessnight = '-'
+                # разбор явления
+                if td[9].find('img') is not None:
+                    phenomenamass = td[9].findAll('img')[0].get('src').split('/')
+                    dlphenomena = len(phenomenamass)
+                    phenomenama = phenomenamass[dlphenomena - 1]
+                    if phenomenama == 'snow.png':
+                        phenomenamaElnight = 'снег'
+                    elif phenomenama == 'storm.png':
+                        phenomenamaElnight = 'гроза'
+                    elif phenomenama == 'rain-bw.png':
+                        phenomenamaElnight = 'дождь'
+                    else:
+                        phenomenamaElnight = "-"
 
-            else:
-                phenomenamaElnight = '-'
-            windnight = td[10].text
-            if td[10].text == '':
-                windnight = "-"
-            else:
+                else:
+                    phenomenamaElnight = '-'
                 windnight = td[10].text
-            # Добавление текущих данных
-            idcity = urldata[4]
-            data.append(
-                {
-                    "idcity": idcity,
-                    "day": day,
-                    "tempday": tempday,
-                    "barday": barday,
-                    "cloudinessDAY": cloudinessDAY,
-                    "phenomenamaEl": phenomenamaEl,
-                    "wind": wind,
-                    "tempnight": tempnight,
-                    "barnight": barnight,
-                    "cloudinessnight": cloudinessnight,
-                    "phenomenamaElnight": phenomenamaElnight,
-                    "windnight": windnight
-                }
-            )
-            # запись индивидуального csv
-            with open(f"data/{dictcyty[idcity]}_{monthyear}.csv", "a", encoding="utf-8") as file:
-                writer = csv.writer(file)
-                writer.writerow(
-                    (
-                        idcity,
-                        day,
-                        tempday,
-                        barday,
-                        cloudinessDAY,
-                        phenomenamaEl,
-                        wind,
-                        tempnight,
-                        barnight,
-                        cloudinessnight,
-                        phenomenamaElnight,
-                        windnight
-                    )
+                if td[10].text == '':
+                    windnight = "-"
+                else:
+                    windnight = td[10].text
+                # Добавление текущих данных
+                idcity = urldata[4]
+                data.append(
+                    {
+                        "idcity": idcity,
+                        "day": day,
+                        "tempday": tempday,
+                        "barday": barday,
+                        "cloudinessDAY": cloudinessDAY,
+                        "phenomenamaEl": phenomenamaEl,
+                        "wind": wind,
+                        "tempnight": tempnight,
+                        "barnight": barnight,
+                        "cloudinessnight": cloudinessnight,
+                        "phenomenamaElnight": phenomenamaElnight,
+                        "windnight": windnight
+                    }
                 )
-                # запись csv общего файла
-                with open(f"data/{'Всенаселенныезавсевремя'}.csv", "a", encoding="utf-8") as file:
+                # запись индивидуального csv
+                with open(f"data/{dictcyty[idcity]}_{monthyear}.csv", "a", encoding="utf-8") as file:
                     writer = csv.writer(file)
                     writer.writerow(
                         (
@@ -267,26 +249,47 @@ for url in urllist:
                             windnight
                         )
                     )
+                    # запись csv общего файла
+                    with open(f"data/{'Всенаселенныезавсевремя'}.csv", "a", encoding="utf-8") as file:
+                        writer = csv.writer(file)
+                        writer.writerow(
+                            (
+                                idcity,
+                                day,
+                                tempday,
+                                barday,
+                                cloudinessDAY,
+                                phenomenamaEl,
+                                wind,
+                                tempnight,
+                                barnight,
+                                cloudinessnight,
+                                phenomenamaElnight,
+                                windnight
+                            )
+                        )
 
-            # попытка Запись в БД.
-            # На данный момент не получилось добиться записи в бд
-            iddiary = int(
-                str(idcity) + str(urldata[numurldata - 2]) + str(urldata[numurldata - 1]))
-            try:
-                with connection.cursor() as cursor:
-                    sql = """ INSERT INTO diary (day, tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight, 
-                    barnight, cloudinessnight, phenomenamaElnight, windnight, city_idcity)
-                    VALUES=(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-                    record = (
-                    datetime.date.fromisoformat(day), tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight,
-                    barnight, cloudinessnight, phenomenamaElnight, windnight, int(idcity))
-                    cursor.execute(sql, record)
-                    connection.commit()
-                    print('Комит успешен')
-            finally:
-                connection.close()
-        except Exception as exx:
-            print(exx)
+                # попытка Запись в БД.
+                # На данный момент не получилось добиться записи в бд
+                iddiary = int(
+                    str(idcity) + str(urldata[numurldata - 2]) + str(urldata[numurldata - 1]))
+            #     try:
+            #         with connection.cursor() as cursor:
+            #             sql = """ INSERT INTO diary (day, tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight,
+            #             barnight, cloudinessnight, phenomenamaElnight, windnight, city_idcity)
+            #             VALUES=(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            #             record = (
+            #             datetime.date.fromisoformat(day), tempday, barday, cloudinessDAY, phenomenamaEl, wind, tempnight,
+            #             barnight, cloudinessnight, phenomenamaElnight, windnight, int(idcity))
+            #             cursor.execute(sql, record)
+            #             connection.commit()
+            #             print('Комит успешен')
+            #     finally:
+            #         connection.close()
+            # except Exception as exx:
+            #     print(exx)
+        except Exception as ex:
+            print(ex)
     # запись json индивидуального файла
     with open(f"data/{dictcyty[idcity]}_{monthyear}.json", "a", encoding="utf-8") as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
